@@ -2,6 +2,9 @@ let num1, num2, correctAnswer, options;
 
 function playBeep(frequency, duration) {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
     oscillator.connect(gainNode);
