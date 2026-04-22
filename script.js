@@ -16,7 +16,11 @@ let difficultySettings = {
         maxNum: 50,
         blankCount: 1
     },
-    stepPattern: 'easy' // easy, hard
+    stepPattern: { // stepPattern도 객체로 변경
+        difficulty: 'easy', // easy, hard
+        minNum: 1,
+        maxNum: 50
+    }
 };
 
 // 각 난이도별 범위
@@ -105,7 +109,9 @@ function openSettings() {
         document.getElementById('minNum').value = difficultySettings.pattern.minNum;
         document.getElementById('maxNum').value = difficultySettings.pattern.maxNum;
         document.getElementById('blankCount').value = difficultySettings.pattern.blankCount;
-    } else {
+    } else if (currentMode === 'stepPattern') { // stepPattern 설정값 로드
+        document.getElementById('stepMinNum').value = difficultySettings.stepPattern.minNum;
+        document.getElementById('stepMaxNum').value = difficultySettings.stepPattern.maxNum;
         document.querySelector(`input[name="stepDifficulty"][value="${difficultySettings.stepPattern}"]`).checked = true;
     }
     updateSettingsSection();
@@ -142,7 +148,7 @@ function updateSettingsSection() {
 // 난이도 업데이트
 function updateDifficulty(mode, difficulty) {
     if (mode === 'addition') difficultySettings.addition = difficulty;
-    if (mode === 'stepPattern') difficultySettings.stepPattern = difficulty;
+    if (mode === 'stepPattern') difficultySettings.stepPattern.difficulty = difficulty; // difficulty 속성만 업데이트
 }
 
 // 입력값 검증
@@ -168,6 +174,28 @@ function validateInput() {
     difficultySettings.pattern.maxNum = parseInt(document.getElementById('maxNum').value);
     difficultySettings.pattern.blankCount = parseInt(document.getElementById('blankCount').value);
 }
+
+// 패턴채우기 모드의 입력값 검증 및 저장
+function validateStepPatternRange() {
+    let minNum = parseInt(document.getElementById('stepMinNum').value);
+    let maxNum = parseInt(document.getElementById('stepMaxNum').value);
+
+    // 최소값이 최대값보다 크면 수정
+    if (minNum > maxNum) {
+        minNum = maxNum - 1;
+        document.getElementById('stepMinNum').value = minNum;
+    }
+
+    // 범위 내에 맞춤
+    if (minNum < 1) document.getElementById('stepMinNum').value = 1;
+    if (maxNum > 99) document.getElementById('stepMaxNum').value = 99;
+
+    // 설정 저장
+    difficultySettings.stepPattern.minNum = parseInt(document.getElementById('stepMinNum').value);
+    difficultySettings.stepPattern.maxNum = parseInt(document.getElementById('stepMaxNum').value);
+}
+
+
 
 function playBeep(type) {
     initAudioContext();
@@ -331,20 +359,24 @@ function generateStepPatternQuestion() {
 }
 
 function generateRandomStepPattern() {
-    const isEasy = difficultySettings.stepPattern === 'easy';
+    const { difficulty, minNum, maxNum } = difficultySettings.stepPattern;
+    const isEasy = difficulty === 'easy';
     const sequenceLength = 5;
-    let step, startNum;
+    let step;
+    let startNum; // startNum은 minNum과 maxNum 사이에서 결정
 
     if (isEasy) {
         step = 5;
-        // 5단위 패턴 (5, 10, 15...) - 최대값이 50을 넘지 않게 시작값 설정
-        const maxStart = 50 - (step * (sequenceLength - 1)); // 50 - 20 = 30
-        startNum = (Math.floor(Math.random() * (maxStart / 5)) + 1) * 5;
+        // 5단위 패턴 (5, 10, 15...) - 최대값이 maxNum을 넘지 않게 시작값 설정
+        const effectiveMaxStart = maxNum - (step * (sequenceLength - 1));
+        startNum = (Math.floor(Math.random() * ((effectiveMaxStart - minNum) / 5 + 1)) * 5) + minNum;
     } else {
         step = Math.floor(Math.random() * 8) + 2; // 2 ~ 9 사이 간격
-        const maxStart = 50 - (step * (sequenceLength - 1));
-        startNum = Math.floor(Math.random() * maxStart) + 1;
+        const effectiveMaxStart = maxNum - (step * (sequenceLength - 1));
+        startNum = Math.floor(Math.random() * (effectiveMaxStart - minNum + 1)) + minNum;
     }
+    // startNum이 minNum보다 작아지지 않도록 보정
+    startNum = Math.max(minNum, startNum);
 
     const array = [];
     for (let i = 0; i < sequenceLength; i++) {
