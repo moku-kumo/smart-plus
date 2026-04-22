@@ -110,7 +110,6 @@ function openSettings() {
         document.getElementById('maxNum').value = difficultySettings.pattern.maxNum;
         document.getElementById('blankCount').value = difficultySettings.pattern.blankCount;
     } else if (currentMode === 'stepPattern') { // stepPattern 설정값 로드
-        document.getElementById('stepMinNum').value = difficultySettings.stepPattern.minNum;
         document.getElementById('stepMaxNum').value = difficultySettings.stepPattern.maxNum;
         document.querySelector(`input[name="stepDifficulty"][value="${difficultySettings.stepPattern}"]`).checked = true;
     }
@@ -177,21 +176,16 @@ function validateInput() {
 
 // 패턴채우기 모드의 입력값 검증 및 저장
 function validateStepPatternRange() {
-    let minNum = parseInt(document.getElementById('stepMinNum').value);
     let maxNum = parseInt(document.getElementById('stepMaxNum').value);
 
-    // 최소값이 최대값보다 크면 수정
-    if (minNum > maxNum) {
-        minNum = maxNum - 1;
-        document.getElementById('stepMinNum').value = minNum;
-    }
-
     // 범위 내에 맞춤
-    if (minNum < 1) document.getElementById('stepMinNum').value = 1;
     if (maxNum > 99) document.getElementById('stepMaxNum').value = 99;
+    if (maxNum < 1) document.getElementById('stepMaxNum').value = 1; // 최소 1보다는 커야 함
+
+    // minNum은 항상 1로 고정
+    difficultySettings.stepPattern.minNum = 1;
 
     // 설정 저장
-    difficultySettings.stepPattern.minNum = parseInt(document.getElementById('stepMinNum').value);
     difficultySettings.stepPattern.maxNum = parseInt(document.getElementById('stepMaxNum').value);
 }
 
