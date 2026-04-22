@@ -105,19 +105,12 @@ function generatePatternQuestion() {
     // 패턴을 시각적으로 표시 (빈칸은 네모로 표시)
     const questionDiv = document.getElementById('question');
     questionDiv.innerHTML = '';
-    questionDiv.style.display = 'flex';
-    questionDiv.style.justifyContent = 'center';
-    questionDiv.style.alignItems = 'center';
-    questionDiv.style.gap = '15px';
-    questionDiv.style.fontSize = '28px';
-    questionDiv.style.fontWeight = 'bold';
     
     patternArray.forEach((num, idx) => {
         const span = document.createElement('span');
         if (idx === blankIndex) {
             span.textContent = '□';
             span.style.color = '#ff6347';
-            span.style.fontSize = '32px';
         } else {
             span.textContent = num;
             span.style.color = '#333';
