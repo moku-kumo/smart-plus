@@ -127,10 +127,10 @@ function generatePatternQuestion() {
     
     document.getElementById('feedback').textContent = '';
 
-    // 정답과 오답 옵션 생성
+    // 정답과 오답 옵션 생성 (3개 옵션)
     options = new Set([correctAnswer]);
-    while (options.size < 5) {
-        let wrong = Math.floor(Math.random() * 30);
+    while (options.size < 3) {
+        let wrong = Math.floor(Math.random() * 10) + Math.max(0, correctAnswer - 5);
         if (wrong !== correctAnswer) options.add(wrong);
     }
     options = Array.from(options).sort(() => Math.random() - 0.5);
@@ -152,31 +152,11 @@ function generatePatternQuestion() {
 }
 
 function generateRandomPattern() {
-    const patternType = Math.floor(Math.random() * 4);
-    let array, blank;
+    // 간단한 수열 생성 (6살짜리를 위한 기본 수열)
+    const startNum = Math.floor(Math.random() * 50) + 1; // 1-50
+    const array = [startNum, startNum + 1, startNum + 2, startNum + 3];
+    const blankIndex = Math.floor(Math.random() * 4);
     
-    switch(patternType) {
-        case 0: // 등차수열 (공차 1-3)
-            const diff = Math.floor(Math.random() * 3) + 1;
-            const start = Math.floor(Math.random() * 10);
-            array = [start, start + diff, start + 2*diff, start + 3*diff, start + 4*diff];
-            break;
-        case 1: // 배수
-            const base = Math.floor(Math.random() * 5) + 2; // 2-6
-            const multiplier = Math.floor(Math.random() * 5) + 1; // 1-5
-            array = [base*multiplier, base*(multiplier+1), base*(multiplier+2), base*(multiplier+3), base*(multiplier+4)];
-            break;
-        case 2: // 제곱수 패턴
-            const offset = Math.floor(Math.random() * 5);
-            array = [1+offset, 4+offset, 9+offset, 16+offset, 25+offset];
-            break;
-        default: // 홀수/짝수
-            const isOdd = Math.random() > 0.5;
-            const startNum = isOdd ? Math.floor(Math.random() * 5) * 2 + 1 : Math.floor(Math.random() * 5) * 2;
-            array = [startNum, startNum + 2, startNum + 4, startNum + 6, startNum + 8];
-    }
-    
-    const blankIndex = Math.floor(Math.random() * 5);
     return {
         array: array,
         blank: array[blankIndex],
