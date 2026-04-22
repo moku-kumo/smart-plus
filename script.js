@@ -148,6 +148,7 @@ function updateSettingsSection() {
 function updateDifficulty(mode, difficulty) {
     if (mode === 'addition') difficultySettings.addition = difficulty;
     if (mode === 'stepPattern') difficultySettings.stepPattern.difficulty = difficulty; // difficulty 속성만 업데이트
+    saveSettings();
 }
 
 // 입력값 검증
@@ -172,6 +173,7 @@ function validateInput() {
     difficultySettings.pattern.minNum = parseInt(document.getElementById('minNum').value);
     difficultySettings.pattern.maxNum = parseInt(document.getElementById('maxNum').value);
     difficultySettings.pattern.blankCount = parseInt(document.getElementById('blankCount').value);
+    saveSettings();
 }
 
 // 패턴채우기 모드의 입력값 검증 및 저장
@@ -179,6 +181,11 @@ function validateStepPatternRange() {
     let maxNum = parseInt(document.getElementById('stepMaxNum').value);
 
     // 범위 내에 맞춤
+    // 패턴 수열(5개)을 만들기 위해 최소 20 이상 권장
+    if (maxNum < 20) {
+        maxNum = 20;
+        document.getElementById('stepMaxNum').value = 20;
+    }
     if (maxNum > 99) document.getElementById('stepMaxNum').value = 99;
     if (maxNum < 1) document.getElementById('stepMaxNum').value = 1; // 최소 1보다는 커야 함
 
@@ -187,6 +194,7 @@ function validateStepPatternRange() {
 
     // 설정 저장
     difficultySettings.stepPattern.maxNum = parseInt(document.getElementById('stepMaxNum').value);
+    saveSettings();
 }
 
 
@@ -329,8 +337,28 @@ function generateStepPatternQuestion() {
     
     document.getElementById('feedback').textContent = '';
 
+    // 논리적인 오답지 생성
+    const step = patternArray[1] - patternArray[0];
     options = new Set();
     blankIndices.forEach(idx => options.add(patternArray[idx]));
+    
+    // 정답 근처의 숫자나 간격을 활용한 매력적인 오답 추가
+    const firstCorrect = patternArray[blankIndices[0]];
+    const distractors = [
+        firstCorrect + step,
+        firstCorrect - step,
+        firstCorrect + 1,
+        firstCorrect - 1,
+        firstCorrect + 2,
+        firstCorrect - 2
+    ];
+
+    distractors.forEach(val => {
+        if (options.size < Math.max(3, blankIndices.length + 2) && val > 0 && val <= difficultySettings.stepPattern.maxNum && !patternArray.includes(val)) {
+            options.add(val);
+        }
+    });
+
     while (options.size < Math.max(3, blankIndices.length + 2)) {
         let wrong = Math.floor(Math.random() * difficultySettings.stepPattern.maxNum) + 1;
         if (!patternArray.includes(wrong)) options.add(wrong);
@@ -361,10 +389,9 @@ function generateRandomStepPattern() {
 
     if (isEasy) {
         step = 5;
-        maxNum = 50; // 쉬움은 50 고정
-        // 5단위 패턴이 50을 넘지 않게 시작값 계산 (최대 시작 가능: 50 - 5*4 = 30)
+        // 설정된 maxNum을 존중하되 5단위 패턴이 넘지 않게 계산
         const effectiveMaxStart = maxNum - (step * (sequenceLength - 1)); 
-        startNum = (Math.floor(Math.random() * (effectiveMaxStart / 5)) + 1) * 5;
+        startNum = (Math.floor(Math.random() * (Math.max(0, effectiveMaxStart) / 5)) + 1) * 5;
     } else {
         // 어려움: 간격 1~9 랜덤, 설정된 maxNum에 맞춤
         // 간격이 너무 크면 maxNum을 넘어버리므로 maxNum에 맞춰 간격 제한 (Pairing)
@@ -517,4 +544,5 @@ function checkAnswer(selected, btn) {
     }
 }
 // Initialize first question
+loadSettings(); // 저장된 설정 불러오기
 switchMode('addition');
