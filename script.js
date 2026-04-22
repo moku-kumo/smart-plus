@@ -309,7 +309,7 @@ function handleTimeOut() {
     setTimeout(() => {
         if (currentMode === 'addition') generateAdditionQuestion();
         else generatePatternQuestion();
-    }, 2000);
+    }, 1000);
 }
 
 function checkAnswer(selected, btn) {
@@ -327,8 +327,9 @@ function checkAnswer(selected, btn) {
         playBeep('correct');
         
         setTimeout(() => {
-            generateAdditionQuestion();
-        }, 2000);
+            if (currentMode === 'addition') generateAdditionQuestion();
+            else generatePatternQuestion();
+        }, 1000);
     } else if (currentMode === 'addition') {
         const buttons = document.querySelectorAll('.option-btn');
         buttons.forEach(b => b.disabled = true);
@@ -340,8 +341,9 @@ function checkAnswer(selected, btn) {
         playBeep('wrong');
         
         setTimeout(() => {
-            generateAdditionQuestion();
-        }, 2000);
+            if (currentMode === 'addition') generateAdditionQuestion();
+            else generatePatternQuestion();
+        }, 1000);
     } else if (currentMode === 'pattern') {
         // 패턴 모드: 순차적으로 빈칸 채우기
         const currentBlankIdx = blankIndices[userAnswers.length];
@@ -377,7 +379,7 @@ function checkAnswer(selected, btn) {
                 
                 setTimeout(() => {
                     generatePatternQuestion();
-                }, 2000);
+                }, 1000);
             } else {
                 // 아직 채울 빈칸이 남음
                 initAudioContext();
