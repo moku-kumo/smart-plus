@@ -34,11 +34,17 @@ h1 {
 }
 
 #question {
-    font-size: 28px;
+    font-size: 24px;
+    padding: 20px;
     margin: 20px 0;
     color: #333;
     font-weight: bold;
     font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    min-height: 60px;
 }
 
 .mode-selector {

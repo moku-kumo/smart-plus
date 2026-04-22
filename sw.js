@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smart-add-v5';
+const CACHE_NAME = 'smart-add-v6';
 const urlsToCache = [
   './',
   './index.html',
