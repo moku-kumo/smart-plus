@@ -332,7 +332,7 @@ function generateStepPatternQuestion() {
     options = new Set();
     blankIndices.forEach(idx => options.add(patternArray[idx]));
     while (options.size < Math.max(3, blankIndices.length + 2)) {
-        let wrong = Math.floor(Math.random() * 50) + 1;
+        let wrong = Math.floor(Math.random() * difficultySettings.stepPattern.maxNum) + 1;
         if (!patternArray.includes(wrong)) options.add(wrong);
     }
     options = Array.from(options).sort(() => Math.random() - 0.5);
