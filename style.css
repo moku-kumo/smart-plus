@@ -47,7 +47,7 @@ body {
     transform: scale(1.05);
 }
 
-/* 모달 스타일 -->
+/* 모달 스타일 */
 .modal {
     display: none;
     position: fixed;

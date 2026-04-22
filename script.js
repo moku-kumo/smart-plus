@@ -57,7 +57,9 @@ function switchMode(mode) {
 
 // 설정 모달 열기
 function openSettings() {
-    document.getElementById('settingsModal').classList.add('active');
+    const modal = document.getElementById('settingsModal');
+    modal.style.display = 'flex';
+    modal.classList.add('active');
     // 현재 설정값 업데이트
     if (currentMode === 'addition') {
         document.querySelector(`input[name="difficulty"][value="${difficultySettings.addition}"]`).checked = true;
@@ -71,7 +73,9 @@ function openSettings() {
 
 // 설정 모달 닫기
 function closeSettings() {
-    document.getElementById('settingsModal').classList.remove('active');
+    const modal = document.getElementById('settingsModal');
+    modal.style.display = 'none';
+    modal.classList.remove('active');
 }
 
 // 모달 섹션 업데이트
@@ -209,8 +213,8 @@ function generatePatternQuestion() {
     options = new Set();
     blankIndices.forEach(idx => options.add(patternArray[idx]));
     while (options.size < Math.max(3, blankIndices.length + 2)) {
-        let wrong = Math.floor(Math.random() * (difficultySettings.pattern.maxNum + 5));
-        if (wrong !== correctAnswer) options.add(wrong);
+        let wrong = Math.floor(Math.random() * (difficultySettings.pattern.maxNum + 5)) + 1;
+        if (!patternArray.includes(wrong)) options.add(wrong);
     }
     options = Array.from(options).sort(() => Math.random() - 0.5);
 
