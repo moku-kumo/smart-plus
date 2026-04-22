@@ -53,7 +53,8 @@ function startTimer() {
 }
 
 function updateTimerDisplay() {
-    document.getElementById('timer-display').textContent = `남은 시간: ${timeLeft}초`;
+    const percentage = (timeLeft / 25) * 100;
+    document.getElementById('timer-bar').style.width = `${percentage}%`;
 }
 
 // 게임 모드 전환
