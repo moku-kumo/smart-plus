@@ -13,12 +13,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>빈칸채우기</h1>
+        <div class="header">
+            <h1>빈칸채우기</h1>
+            <button class="settings-btn" onclick="openSettings()">⚙️ 설정</button>
+        </div>
         
         <!-- 모드 선택 버튼 -->
         <div class="mode-selector">
             <button class="mode-btn active" onclick="switchMode('addition')">➕ 더하기</button>
-            <button class="mode-btn" onclick="switchMode('pattern')">� 빈칸채우기</button>
+            <button class="mode-btn" onclick="switchMode('pattern')">🗐 빈칸채우기</button>
         </div>
         
         <div class="score-board">
@@ -28,6 +31,51 @@
         <p id="question">문제를 준비 중...</p>
         <div id="options"></div>
         <p id="feedback"></p>
+    </div>
+    
+    <!-- 설정 모달 -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>설정</h2>
+                <button class="close-btn" onclick="closeSettings()">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- 더하기 설정 -->
+                <div id="additionSettings" class="settings-section">
+                    <h3>더하기 난이도</h3>
+                    <label>
+                        <input type="radio" name="difficulty" value="easy" onchange="updateDifficulty('addition', 'easy')" checked> 쉬움 (1-5)
+                    </label>
+                    <label>
+                        <input type="radio" name="difficulty" value="normal" onchange="updateDifficulty('addition', 'normal')"> 보통 (0-10)
+                    </label>
+                    <label>
+                        <input type="radio" name="difficulty" value="hard" onchange="updateDifficulty('addition', 'hard')"> 어려움 (10-20)
+                    </label>
+                </div>
+                
+                <!-- 빈칸채우기 설정 -->
+                <div id="patternSettings" class="settings-section" style="display:none;">
+                    <h3>빈칸채우기 설정</h3>
+                    <div class="setting-input-group">
+                        <label>숫자 최소 값:</label>
+                        <input type="number" id="minNum" min="1" max="99" value="1" onchange="validateInput()">
+                    </div>
+                    <div class="setting-input-group">
+                        <label>숫자 최대 값:</label>
+                        <input type="number" id="maxNum" min="1" max="99" value="50" onchange="validateInput()">
+                    </div>
+                    <div class="setting-input-group">
+                        <label>빈칸 숫자 개수:</label>
+                        <input type="number" id="blankCount" min="1" max="3" value="1" onchange="validateInput()">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeSettings()">done</button>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
     <script>
