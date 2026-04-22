@@ -41,6 +41,9 @@ function switchMode(mode) {
     document.getElementById('correct-count').textContent = '0';
     document.getElementById('wrong-count').textContent = '0';
     
+    // 타이틀 텍스트 변경
+    document.getElementById('game-title').textContent = mode === 'addition' ? '스마트 더하기' : '빈칸채우기';
+    
     // Update active button state
     document.querySelectorAll('.mode-btn').forEach(btn => {
         const btnMode = btn.getAttribute('onclick')?.includes(mode);
@@ -333,4 +336,4 @@ function checkAnswer(selected, btn) {
 }
 
 // Initialize first question
-generateAdditionQuestion();
+switchMode('addition');
