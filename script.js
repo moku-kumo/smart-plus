@@ -111,7 +111,7 @@ function openSettings() {
         document.getElementById('blankCount').value = difficultySettings.pattern.blankCount;
     } else if (currentMode === 'stepPattern') { // stepPattern 설정값 로드
         document.getElementById('stepMaxNum').value = difficultySettings.stepPattern.maxNum;
-        document.querySelector(`input[name="stepDifficulty"][value="${difficultySettings.stepPattern}"]`).checked = true;
+        document.querySelector(`input[name="stepDifficulty"][value="${difficultySettings.stepPattern.difficulty}"]`).checked = true;
     }
     updateSettingsSection();
 }
@@ -353,24 +353,27 @@ function generateStepPatternQuestion() {
 }
 
 function generateRandomStepPattern() {
-    const { difficulty, minNum, maxNum } = difficultySettings.stepPattern;
+    let { difficulty, minNum, maxNum } = difficultySettings.stepPattern;
     const isEasy = difficulty === 'easy';
     const sequenceLength = 5;
     let step;
-    let startNum; // startNum은 minNum과 maxNum 사이에서 결정
+    let startNum;
 
     if (isEasy) {
         step = 5;
-        // 5단위 패턴 (5, 10, 15...) - 최대값이 maxNum을 넘지 않게 시작값 설정
-        const effectiveMaxStart = maxNum - (step * (sequenceLength - 1));
-        startNum = (Math.floor(Math.random() * ((effectiveMaxStart - minNum) / 5 + 1)) * 5) + minNum;
+        maxNum = 50; // 쉬움은 50 고정
+        // 5단위 패턴이 50을 넘지 않게 시작값 계산 (최대 시작 가능: 50 - 5*4 = 30)
+        const effectiveMaxStart = maxNum - (step * (sequenceLength - 1)); 
+        startNum = (Math.floor(Math.random() * (effectiveMaxStart / 5)) + 1) * 5;
     } else {
-        step = Math.floor(Math.random() * 8) + 2; // 2 ~ 9 사이 간격
+        // 어려움: 간격 1~9 랜덤, 설정된 maxNum에 맞춤
+        // 간격이 너무 크면 maxNum을 넘어버리므로 maxNum에 맞춰 간격 제한 (Pairing)
+        const maxPossibleStep = Math.floor((maxNum - minNum) / (sequenceLength - 1));
+        step = Math.floor(Math.random() * Math.min(9, maxPossibleStep)) + 1;
+        
         const effectiveMaxStart = maxNum - (step * (sequenceLength - 1));
         startNum = Math.floor(Math.random() * (effectiveMaxStart - minNum + 1)) + minNum;
     }
-    // startNum이 minNum보다 작아지지 않도록 보정
-    startNum = Math.max(minNum, startNum);
 
     const array = [];
     for (let i = 0; i < sequenceLength; i++) {
