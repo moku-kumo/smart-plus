@@ -1,10 +1,10 @@
 const CACHE_NAME = 'smart-add-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/script.js',
-  '/manifest.json'
+  './',
+  './index.html',
+  './style.css',
+  './script.js',
+  './manifest.json'
 ];
 
 self.addEventListener('install', event => {
