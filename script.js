@@ -5,6 +5,8 @@ let wrongCount = 0;
 let currentMode = 'addition'; // 'addition' 또는 'pattern'
 let patternArray, blankIndices;
 let userAnswers = [];
+let timeLeft = 25;
+let timerInterval;
 
 // 난이도 설정
 let difficultySettings = {
@@ -33,6 +35,27 @@ function initAudioContext() {
     }
 }
 
+// 타이머 시작 함수
+function startTimer() {
+    clearInterval(timerInterval);
+    timeLeft = 25;
+    updateTimerDisplay();
+    
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            handleTimeOut();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    document.getElementById('timer-display').textContent = `남은 시간: ${timeLeft}초`;
+}
+
 // 게임 모드 전환
 function switchMode(mode) {
     currentMode = mode;
@@ -42,7 +65,7 @@ function switchMode(mode) {
     document.getElementById('wrong-count').textContent = '0';
     
     // 타이틀 텍스트 변경
-    document.getElementById('game-title').textContent = mode === 'addition' ? '스마트 더하기' : '빈칸채우기';
+    document.getElementById('game-title').textContent = mode === 'addition' ? '더하기' : '빈칸채우기';
     
     // Update active button state
     document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -184,6 +207,7 @@ function generateAdditionQuestion() {
     initAudioContext();
     const now = audioContext.currentTime;
     playTone(600, 0.1, now);
+    startTimer();
 }
 
 function generatePatternQuestion() {
@@ -235,6 +259,7 @@ function generatePatternQuestion() {
     initAudioContext();
     const now = audioContext.currentTime;
     playTone(600, 0.1, now);
+    startTimer();
 }
 
 function generateRandomPattern() {
@@ -263,7 +288,26 @@ function generateRandomPattern() {
     };
 }
 
+function handleTimeOut() {
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach(b => b.disabled = true);
+    
+    wrongCount++;
+    document.getElementById('wrong-count').textContent = wrongCount;
+    document.getElementById('feedback').textContent = '시간이 다 됐어요! 다음 문제로~ 😊';
+    document.getElementById('feedback').style.color = 'orange';
+    playBeep('wrong');
+    
+    setTimeout(() => {
+        if (currentMode === 'addition') generateAdditionQuestion();
+        else generatePatternQuestion();
+    }, 2000);
+}
+
 function checkAnswer(selected, btn) {
+    // 정답 확인 시 타이머 멈춤
+    clearInterval(timerInterval);
+
     if (selected === correctAnswer) {
         const buttons = document.querySelectorAll('.option-btn');
         buttons.forEach(b => b.disabled = true);

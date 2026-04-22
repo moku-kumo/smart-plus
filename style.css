@@ -28,15 +28,21 @@ body {
 }
 
 .header {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.header-controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .settings-btn {
-    padding: 8px 15px;
-    font-size: 16px;
+    padding: 8px 12px;
+    font-size: 20px;
     background: #e0e0e0;
     border: none;
     border-radius: 8px;
@@ -47,6 +53,16 @@ body {
 .settings-btn:hover {
     background: #d0d0d0;
     transform: scale(1.05);
+}
+
+.timer-board {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ff6347;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #ffe5e5;
+    border-radius: 10px;
 }
 
 /* 모달 스타일 */
@@ -203,14 +219,12 @@ h1 {
 
 .mode-selector {
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 5px;
 }
 
 .mode-btn {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 8px 15px;
+    font-size: 18px;
     font-weight: bold;
     border: none;
     border-radius: 10px;

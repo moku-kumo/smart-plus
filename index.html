@@ -8,22 +8,26 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="theme-color" content="#ff6347">
-    <title>스마트 더하기</title>
+    <title>더하기</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1 id="game-title">스마트 더하기</h1>
-            <button class="settings-btn" onclick="openSettings()">⚙️ 설정</button>
+            <h1 id="game-title">더하기</h1>
+            <div class="header-controls">
+                <div class="mode-selector">
+                    <button class="mode-btn active" onclick="switchMode('addition')">➕</button>
+                    <button class="mode-btn" onclick="switchMode('pattern')">🗐</button>
+                </div>
+                <button class="settings-btn" onclick="openSettings()">⚙️</button>
+            </div>
         </div>
-        
-        <!-- 모드 선택 버튼 -->
-        <div class="mode-selector">
-            <button class="mode-btn active" onclick="switchMode('addition')">➕ 더하기</button>
-            <button class="mode-btn" onclick="switchMode('pattern')">🗐 빈칸채우기</button>
+
+        <div class="timer-board">
+            <span id="timer-display">남은 시간: 25초</span>
         </div>
-        
+
         <div class="score-board">
             <span class="score">✓ 맞힌수: <span id="correct-count">0</span></span>
             <span class="score">✗ 틀린수: <span id="wrong-count">0</span></span>
