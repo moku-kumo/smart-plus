@@ -139,13 +139,17 @@ function updateSettingsSection() {
     }
 }
 
-// 난이도 업데이트ecuol
+// 난이도 업데이트
+function updateDifficulty(mode, difficulty) {
     if (mode === 'addition') difficultySettings.addition = difficulty;
     if (mode === 'stepPattern') difficultySettings.stepPattern = difficulty;
 }
 
 // 입력값 검증
-function validateInput() {ocuet blankCount = parseInt(document.getElementById('blankCount').value);
+function validateInput() {
+    let minNum = parseInt(document.getElementById('minNum').value);
+    let maxNum = parseInt(document.getElementById('maxNum').value);
+    let blankCount = parseInt(document.getElementById('blankCount').value);
     
     // 최소값이 최대값보다 크면 수정
     if (minNum > maxNum) {
