@@ -19,6 +19,7 @@
                 <div class="mode-selector">
                     <button class="mode-btn active" onclick="switchMode('addition')">➕</button>
                     <button class="mode-btn" onclick="switchMode('pattern')">🗐</button>
+                    <button class="mode-btn" onclick="switchMode('stepPattern')">🧩</button>
                 </div>
                 <button class="settings-btn" onclick="openSettings()">⚙️</button>
             </div>
@@ -74,6 +75,17 @@
                         <label>빈칸 숫자 개수:</label>
                         <input type="number" id="blankCount" min="1" max="3" value="1" onchange="validateInput()">
                     </div>
+                </div>
+
+                <!-- 패턴채우기 설정 -->
+                <div id="stepPatternSettings" class="settings-section" style="display:none;">
+                    <h3>패턴채우기 난이도</h3>
+                    <label>
+                        <input type="radio" name="stepDifficulty" value="easy" onchange="updateDifficulty('stepPattern', 'easy')" checked> 쉬움 (5단위)
+                    </label>
+                    <label>
+                        <input type="radio" name="stepDifficulty" value="hard" onchange="updateDifficulty('stepPattern', 'hard')"> 어려움 (단위 제한 없음)
+                    </label>
                 </div>
             </div>
             <div class="modal-footer">

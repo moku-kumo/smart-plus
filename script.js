@@ -15,16 +15,16 @@ let difficultySettings = {
         minNum: 1,
         maxNum: 50,
         blankCount: 1
-    }
+    },
+    stepPattern: 'easy' // easy, hard
 };
 
 // 각 난이도별 범위
 const difficultyRanges = {
     easy: { min: 1, max: 5 },
     normal: { min: 0, max: 10 },
-    hard: { min: 10, max: 20 }
+    hard: { min: 0, max: 20 }
 };
-
 // AudioContext 초기화
 function initAudioContext() {
     if (!audioContext) {
@@ -73,7 +73,10 @@ function switchMode(mode) {
     document.getElementById('wrong-count').textContent = '0';
     
     // 타이틀 텍스트 변경
-    document.getElementById('game-title').textContent = mode === 'addition' ? '더하기' : '빈칸채우기';
+    let title = '더하기';
+    if (mode === 'pattern') title = '빈칸채우기';
+    if (mode === 'stepPattern') title = '패턴채우기';
+    document.getElementById('game-title').textContent = title;
     
     // Update active button state
     document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -84,11 +87,12 @@ function switchMode(mode) {
     // 새 게임 시작
     if (mode === 'addition') {
         generateAdditionQuestion();
-    } else {
+    } else if (mode === 'pattern') {
         generatePatternQuestion();
+    } else {
+        generateStepPatternQuestion();
     }
 }
-
 // 설정 모달 열기
 function openSettings() {
     const modal = document.getElementById('settingsModal');
@@ -97,10 +101,12 @@ function openSettings() {
     // 현재 설정값 업데이트
     if (currentMode === 'addition') {
         document.querySelector(`input[name="difficulty"][value="${difficultySettings.addition}"]`).checked = true;
-    } else {
+    } else if (currentMode === 'pattern') {
         document.getElementById('minNum').value = difficultySettings.pattern.minNum;
         document.getElementById('maxNum').value = difficultySettings.pattern.maxNum;
         document.getElementById('blankCount').value = difficultySettings.pattern.blankCount;
+    } else {
+        document.querySelector(`input[name="stepDifficulty"][value="${difficultySettings.stepPattern}"]`).checked = true;
     }
     updateSettingsSection();
 }
@@ -116,28 +122,30 @@ function closeSettings() {
 function updateSettingsSection() {
     const additionSection = document.getElementById('additionSettings');
     const patternSection = document.getElementById('patternSettings');
+    const stepSection = document.getElementById('stepPatternSettings');
     
     if (currentMode === 'addition') {
         additionSection.style.display = 'block';
         patternSection.style.display = 'none';
-    } else {
+        stepSection.style.display = 'none';
+    } else if (currentMode === 'pattern') {
         additionSection.style.display = 'none';
         patternSection.style.display = 'block';
+        stepSection.style.display = 'none';
+    } else {
+        additionSection.style.display = 'none';
+        patternSection.style.display = 'none';
+        stepSection.style.display = 'block';
     }
 }
 
-// 난이도 업데이트
-function updateDifficulty(mode, difficulty) {
-    if (mode === 'addition') {
-        difficultySettings.addition = difficulty;
-    }
+// 난이도 업데이트ecuol
+    if (mode === 'addition') difficultySettings.addition = difficulty;
+    if (mode === 'stepPattern') difficultySettings.stepPattern = difficulty;
 }
 
 // 입력값 검증
-function validateInput() {
-    let minNum = parseInt(document.getElementById('minNum').value);
-    let maxNum = parseInt(document.getElementById('maxNum').value);
-    let blankCount = parseInt(document.getElementById('blankCount').value);
+function validateInput() {ocuet blankCount = parseInt(document.getElementById('blankCount').value);
     
     // 최소값이 최대값보다 크면 수정
     if (minNum > maxNum) {
@@ -270,6 +278,90 @@ function generatePatternQuestion() {
     startTimer();
 }
 
+function generateStepPatternQuestion() {
+    const patterns = generateRandomStepPattern();
+    patternArray = patterns.array;
+    blankIndices = patterns.blankIndices;
+    userAnswers = [];
+    correctAnswer = null;
+    
+    const questionDiv = document.getElementById('question');
+    questionDiv.innerHTML = '';
+    
+    patternArray.forEach((num, idx) => {
+        const span = document.createElement('span');
+        if (blankIndices.includes(idx)) {
+            span.textContent = '□';
+            span.style.color = '#ff6347';
+            span.id = `blank-${idx}`;
+        } else {
+            span.textContent = num;
+            span.style.color = '#333';
+        }
+        questionDiv.appendChild(span);
+    });
+    
+    document.getElementById('feedback').textContent = '';
+
+    options = new Set();
+    blankIndices.forEach(idx => options.add(patternArray[idx]));
+    while (options.size < Math.max(3, blankIndices.length + 2)) {
+        let wrong = Math.floor(Math.random() * 50) + 1;
+        if (!patternArray.includes(wrong)) options.add(wrong);
+    }
+    options = Array.from(options).sort(() => Math.random() - 0.5);
+
+    const optionsDiv = document.getElementById('options');
+    optionsDiv.innerHTML = '';
+    options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.textContent = option;
+        btn.className = 'option-btn';
+        btn.addEventListener('click', () => checkAnswer(option, btn));
+        optionsDiv.appendChild(btn);
+    });
+
+    initAudioContext();
+    playTone(600, 0.1, audioContext.currentTime);
+    startTimer();
+}
+
+function generateRandomStepPattern() {
+    const isEasy = difficultySettings.stepPattern === 'easy';
+    const sequenceLength = 5;
+    let step, startNum;
+
+    if (isEasy) {
+        step = 5;
+        // 5단위 패턴 (5, 10, 15...) - 최대값이 50을 넘지 않게 시작값 설정
+        const maxStart = 50 - (step * (sequenceLength - 1)); // 50 - 20 = 30
+        startNum = (Math.floor(Math.random() * (maxStart / 5)) + 1) * 5;
+    } else {
+        step = Math.floor(Math.random() * 8) + 2; // 2 ~ 9 사이 간격
+        const maxStart = 50 - (step * (sequenceLength - 1));
+        startNum = Math.floor(Math.random() * maxStart) + 1;
+    }
+
+    const array = [];
+    for (let i = 0; i < sequenceLength; i++) {
+        array.push(startNum + (i * step));
+    }
+    
+    const blankIndices = [];
+    const blankCount = difficultySettings.pattern.blankCount; // 빈칸 개수는 설정 공유
+    while (blankIndices.length < blankCount) {
+        const idx = Math.floor(Math.random() * sequenceLength);
+        if (!blankIndices.includes(idx) && idx > 0 && idx < sequenceLength - 1) {
+            blankIndices.push(idx);
+        }
+    }
+    
+    return {
+        array: array,
+        blankIndices: blankIndices.sort()
+    };
+}
+
 function generateRandomPattern() {
     // 사용자 설정에 따른 수열 생성
     const { minNum, maxNum, blankCount } = difficultySettings.pattern;
@@ -308,6 +400,7 @@ function handleTimeOut() {
     
     setTimeout(() => {
         if (currentMode === 'addition') generateAdditionQuestion();
+        else if (currentMode === 'stepPattern') generateStepPatternQuestion();
         else generatePatternQuestion();
     }, 1000);
 }
@@ -328,6 +421,7 @@ function checkAnswer(selected, btn) {
         
         setTimeout(() => {
             if (currentMode === 'addition') generateAdditionQuestion();
+            else if (currentMode === 'stepPattern') generateStepPatternQuestion();
             else generatePatternQuestion();
         }, 1000);
     } else if (currentMode === 'addition') {
@@ -342,10 +436,11 @@ function checkAnswer(selected, btn) {
         
         setTimeout(() => {
             if (currentMode === 'addition') generateAdditionQuestion();
+            else if (currentMode === 'stepPattern') generateStepPatternQuestion();
             else generatePatternQuestion();
         }, 1000);
-    } else if (currentMode === 'pattern') {
-        // 패턴 모드: 순차적으로 빈칸 채우기
+    } else if (currentMode === 'pattern' || currentMode === 'stepPattern') {
+        // 빈칸/패턴 모드: 순차적으로 빈칸 채우기
         const currentBlankIdx = blankIndices[userAnswers.length];
         const blankSpan = document.getElementById(`blank-${currentBlankIdx}`);
         
@@ -353,7 +448,6 @@ function checkAnswer(selected, btn) {
             blankSpan.textContent = selected;
             blankSpan.style.color = '#333';
             userAnswers.push(selected);
-            btn.disabled = true; // 이미 선택한 버튼 비활성화
             
             // 모든 빈칸이 채워졌는지 확인
             if (userAnswers.length === blankIndices.length) {
@@ -378,7 +472,8 @@ function checkAnswer(selected, btn) {
                 }
                 
                 setTimeout(() => {
-                    generatePatternQuestion();
+                    if (currentMode === 'pattern') generatePatternQuestion();
+                    else generateStepPatternQuestion();
                 }, 1000);
             } else {
                 // 아직 채울 빈칸이 남음
@@ -388,6 +483,5 @@ function checkAnswer(selected, btn) {
         }
     }
 }
-
 // Initialize first question
 switchMode('addition');
