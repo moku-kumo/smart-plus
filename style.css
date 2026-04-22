@@ -41,6 +41,31 @@ h1 {
     font-family: 'Noto Sans KR', sans-serif;
 }
 
+.score-board {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.score {
+    color: #333;
+    padding: 8px 15px;
+    border-radius: 10px;
+    background: #fff3cd;
+}
+
+.score:first-child {
+    color: #27ae60;
+    background: #d4edda;
+}
+
+.score:last-child {
+    color: #e74c3c;
+    background: #f8d7da;
+}
+
 #options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
