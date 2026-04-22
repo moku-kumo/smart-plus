@@ -102,9 +102,29 @@ function generatePatternQuestion() {
     correctAnswer = patterns.blank;
     blankIndex = patterns.blankIndex;
     
-    // 패턴 표시 (빈칸은 _로 표시)
-    const displayArray = patternArray.map((num, idx) => idx === blankIndex ? '_' : num);
-    document.getElementById('question').textContent = `숫자 패턴: ${displayArray.join(', ')} 에서 _에 들어갈 숫자는?`;
+    // 패턴을 시각적으로 표시 (빈칸은 네모로 표시)
+    const questionDiv = document.getElementById('question');
+    questionDiv.innerHTML = '';
+    questionDiv.style.display = 'flex';
+    questionDiv.style.justifyContent = 'center';
+    questionDiv.style.alignItems = 'center';
+    questionDiv.style.gap = '15px';
+    questionDiv.style.fontSize = '28px';
+    questionDiv.style.fontWeight = 'bold';
+    
+    patternArray.forEach((num, idx) => {
+        const span = document.createElement('span');
+        if (idx === blankIndex) {
+            span.textContent = '□';
+            span.style.color = '#ff6347';
+            span.style.fontSize = '32px';
+        } else {
+            span.textContent = num;
+            span.style.color = '#333';
+        }
+        questionDiv.appendChild(span);
+    });
+    
     document.getElementById('feedback').textContent = '';
 
     // 정답과 오답 옵션 생성
