@@ -39,7 +39,14 @@ function initAudioContext() {
 function startTimer() {
     clearInterval(timerInterval);
     timeLeft = 25;
+    
+    const timerBar = document.getElementById('timer-bar');
+    // 즉시 100%로 초기화하기 위해 트랜지션 잠시 제거
+    timerBar.style.transition = 'none';
     updateTimerDisplay();
+    void timerBar.offsetWidth; // 브라우저가 변경사항을 즉시 적용하도록 강제 리플로우
+    // 다시 부드럽게 줄어들도록 트랜지션 복구
+    timerBar.style.transition = 'width 1s linear';
     
     timerInterval = setInterval(() => {
         timeLeft--;
