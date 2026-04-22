@@ -152,10 +152,10 @@ function generatePatternQuestion() {
 }
 
 function generateRandomPattern() {
-    // 간단한 수열 생성 (6살짜리를 위한 기본 수열)
+    // 간단한 수열 생성 (5개 이상, 6살짜리를 위한 기본 수열)
     const startNum = Math.floor(Math.random() * 50) + 1; // 1-50
-    const array = [startNum, startNum + 1, startNum + 2, startNum + 3];
-    const blankIndex = Math.floor(Math.random() * 4);
+    const array = [startNum, startNum + 1, startNum + 2, startNum + 3, startNum + 4];
+    const blankIndex = Math.floor(Math.random() * 5);
     
     return {
         array: array,
