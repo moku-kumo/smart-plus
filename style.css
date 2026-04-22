@@ -41,6 +41,36 @@ h1 {
     font-family: 'Noto Sans KR', sans-serif;
 }
 
+.mode-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.mode-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    background: #e0e0e0;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.mode-btn:hover {
+    background: #d0d0d0;
+    transform: scale(1.05);
+}
+
+.mode-btn.active {
+    background: linear-gradient(45deg, #ff6347, #ff7f50);
+    color: white;
+    box-shadow: 0 4px 10px rgba(255, 99, 71, 0.3);
+}
+
 .score-board {
     display: flex;
     justify-content: space-around;
