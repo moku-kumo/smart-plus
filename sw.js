@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smart-add-v9';
+const CACHE_NAME = 'smart-add-v12';
 const urlsToCache = [
   './',
   './index.html',
@@ -9,8 +9,15 @@ const urlsToCache = [
 
 self.addEventListener('install', event => {
   event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
     Promise.all([
-      caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)),
+      self.clients.claim(),
       caches.keys().then(keys => {
         return Promise.all(keys
           .filter(key => key !== CACHE_NAME)
