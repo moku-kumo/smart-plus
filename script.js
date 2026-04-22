@@ -240,7 +240,7 @@ function generatePatternQuestion() {
 function generateRandomPattern() {
     // 사용자 설정에 따른 수열 생성
     const { minNum, maxNum, blankCount } = difficultySettings.pattern;
-    const sequenceLength = blankCount + 2; // 빈칸 + 추가 숫자
+    const sequenceLength = 5; // 나열되는 숫자를 5개로 고정
     const startNum = Math.floor(Math.random() * (maxNum - minNum - sequenceLength + 1)) + minNum;
     const array = [];
     
