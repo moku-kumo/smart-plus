@@ -29,6 +29,20 @@ const difficultyRanges = {
     normal: { min: 0, max: 10 },
     hard: { min: 0, max: 20 }
 };
+
+// 설정 저장 및 불러오기 함수 정의
+function saveSettings() {
+    localStorage.setItem('smartPlusSettings', JSON.stringify(difficultySettings));
+}
+
+function loadSettings() {
+    const saved = localStorage.getItem('smartPlusSettings');
+    if (saved) {
+        const parsed = JSON.parse(saved);
+        difficultySettings = parsed;
+    }
+}
+
 // AudioContext 초기화
 function initAudioContext() {
     if (!audioContext) {
